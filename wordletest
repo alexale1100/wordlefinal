@@ -1,0 +1,32 @@
+#uncompleted
+
+from wordlefinal_fortesting import *
+
+# download pytest
+
+# load wordle() in a test
+# test print board
+
+# https://docs.pytest.org/en/stable/how-to/capture-stdout-stderr.html 
+# make a mock dictioary of a board
+# check that the output is what ti should be by using assert and stdout
+
+# test invalid guess
+
+# test valid guess
+
+def test_invalid_guess():
+    output_of_game = wordle_game(["asdf", "spine"], "spine")
+    assert output_of_game[1] == "Invalid guess. Please enter a valid 5-letter word."
+
+# test winning the game
+
+def test_correct_guess():
+    pass
+
+# test failing the game
+def test_fail_game():
+    words_to_guess = ["hello", "ready", "ready", "ready", "ready", "ready"]
+    target_word = "drive" 
+    output_of_game = wordle_game(words_to_guess, target_word)
+    assert output_of_game[1] == "Invalid guess. Please enter a valid 5-letter word."
