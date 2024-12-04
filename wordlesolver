@@ -1,69 +1,86 @@
-
 import random
-from word_list import wordlist  # Importing the wordlist from word_list.py
+from wordlist import wordlist 
 
-class Wordle:
-    def __init__(self, wordlist, target_word=None, max_attempts=6):
-        self.wordlist = wordlist
-        self.target_word = target_word or random.choice(wordlist).upper()
-        self.guesses = []
-        self.hints_given = 0
-        self.max_attempts = max_attempts
-        self.attempts_left = max_attempts
+def get_feedback(guess, target_word):
+    """
+    Generate feedback for the guessed word compared to the target word.
+    Feedback:
+    - 'G' for correct letter in the correct position (Green)
+    - 'Y' for correct letter in the wrong position (Yellow)
+    - '_' for incorrect letter (Gray)
+    """
+    feedback = ["_"] * 5
+    target_list = list(target_word)
 
-    def give_hint(self):
-        if self.attempts_left > 1:  # Ensure we still have guesses left after using a hint
-            if self.hints_given < len(self.target_word):
-                for i in range(len(self.target_word)):
-                    if self.target_word[i] not in self.guesses:
-                        self.hints_given += 1
-                        self.attempts_left -= 1  # Hint counts as one attempt
-                        return f"Hint: Letter at position {i+1} is '{self.target_word[i]}'."
-        return "No more hints available or no attempts left!"
+    # First pass: Find 'G' (correct position)
+    for i, char in enumerate(guess):
+        if char == target_word[i]:
+            feedback[i] = "G"
+            target_list[i] = None  # Mark as used
 
-    def guess(self, guess_word):
-        guess_word = guess_word.upper()
-        if len(guess_word) != len(self.target_word):
-            return "Invalid guess length."
-        
-        self.guesses.append(guess_word)
-        self.attempts_left -= 1
-        result = []
-        
-        for i in range(len(self.target_word)):
-            if guess_word[i] == self.target_word[i]:
-                result.append(f"{guess_word[i]}(correct)")
-            elif guess_word[i] in self.target_word:
-                result.append(f"{guess_word[i]}(wrong position)")
-            else:
-                result.append(f"{guess_word[i]}(wrong)")
-        
-        if guess_word == self.target_word:
-            return f"Congratulations! You guessed the word correctly: {self.target_word}"
-        
-        if self.attempts_left == 0:
-            return f"Game over! You've run out of attempts. The correct word was: {self.target_word}"
-        
-        return f"Result: {' | '.join(result)}\nAttempts left: {self.attempts_left}"
+    # Second pass: Find 'Y' (wrong position)
+    for i, char in enumerate(guess):
+        if feedback[i] == "_" and char in target_list:
+            feedback[i] = "Y"
+            target_list[target_list.index(char)] = None  # Mark as used
 
-# Initialize the Wordle game with a target word (or a random word from the wordlist)
-game = Wordle(wordlist)
+    return "".join(feedback)
 
-print("Welcome to Wordle! Guess the 5-letter word.")
-print("You have 6 total chances, including hints. You can type 'hint' for a hint.")
+def filter_wordlist(wordlist, guess, feedback):
+    """
+    Refine the wordlist based on the feedback.
+    - Eliminate words that don't match the feedback for the guess.
+    """
+    filtered_words = []
+    for word in wordlist:
+        if get_feedback(guess, word) == feedback:
+            filtered_words.append(word)
+    return filtered_words
 
-# Game loop
-while True:
-    command = input("Enter a guess or type 'hint' for a hint: ").strip().upper()
-    
-    if command == "HINT":
-        print(game.give_hint())
-    elif command == "EXIT":
-        print("Thanks for playing!")
-        break
-    else:
-        result = game.guess(command)
-        print(result)
-        
-        if "Congratulations!" in result or "Game over!" in result:
-            break
+def wordle_solver(wordlist, target_word):
+    """
+    Solve the Wordle puzzle.
+    - wordlist: list of possible words
+    - target_word: the word to guess
+    """
+    possible_words = wordlist.copy()
+    attempts = 6  # Number of allowed attempts
+
+    print("Starting Wordle Solver...\n")
+
+    for attempt in range(1, attempts + 1):
+        # Pick a guess (can optimize here by selecting words intelligently, but for simplicity, use the first word)
+        guess = possible_words[0]
+        print(f"Attempt {attempt}: Guess = {guess}")
+
+        # Get feedback for the guess
+        feedback = get_feedback(guess, target_word)
+        print(f"Feedback: {feedback}")
+
+        if feedback == "GGGGG":
+            print(f"Solved! The word is '{guess}' in {attempt} attempts.")
+            return
+
+        # Filter the wordlist based on the feedback
+        possible_words = filter_wordlist(possible_words, guess, feedback)
+
+        if not possible_words:
+            print("No more possible words. Solver failed.")
+            return
+
+    print(f"Failed to solve Wordle within {attempts} attempts. The word was '{target_word}'.")
+
+# Example usage
+if __name__ == "__main__":
+    # Define a wordlist (this is a small example, but in real use, you can use a larger wordlist)
+    # wordlist = [
+    #     "apple", "brick", "chair", "glass", "table", "ocean", "crane", "shiny", "track", "stone", "mango", "grape"
+    # ]
+    wordlist = wordlist
+
+    # Define the target word (this is the word the solver needs to guess)
+    # target_word = "crane"  # Change to the word you want to guess
+    target_word = random.choice(wordlist).lower()
+
+    # Solve the Wordle puzzle
+    wordle_solver(wordlist, target_word)
