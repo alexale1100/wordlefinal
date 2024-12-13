@@ -23,14 +23,6 @@ def printboard(board):
                 print("")
     print()
 
-    # make a list of letters
-    # using cprint 
-    # print letters in letter_in as yellow
-    # print letters in letter_in as green
-
-    # DO KEYBOARD PRINT HERE
-
-
 def wordle_game():
     # Choose a random word from the word list
     target_word = random.choice(wordlist).lower()
