@@ -36,9 +36,10 @@ Challenges:
                Guess word: silly
                Therefore: cross the two "l" off in the guess "silly"
 Drawbacks of Code:
-    Can only guess from available words from wordlist: although the wordlist has lots of words, basic words such as "adieu", a common first guess for many players, are not in the wordlist. Thus, players cannot guess all the possible words and there is a chance that the word they guess is a real word, but is not available in the wordlist which makes their guess invalid.
 
-    No colored keyboard: in the real Wordle game on the NYT, the game comes with a keyboard that shows the player which letter is not used yet, not in the word, in the word but in the wrong place, or is correctly guessed. This visual feature aids the player in their experience with the game. In this code, the code only show the player the color of the letters in the word they guess and does not provide a keyboard.
+Can only guess from available words from wordlist: although the wordlist has lots of words, basic words such as "adieu", a common first guess for many players, are not in the wordlist. Thus, players cannot guess all the possible words and there is a chance that the word they guess is a real word, but is not available in the wordlist which makes their guess invalid.
+
+No colored keyboard: in the real Wordle game on the NYT, the game comes with a keyboard that shows the player which letter is not used yet, not in the word, in the word but in the wrong place, or is correctly guessed. This visual feature aids the player in their experience with the game. In this code, the code only show the player the color of the letters in the word they guess and does not provide a keyboard.
         
 Wordle Solver Code: 
   Goal of code: 
